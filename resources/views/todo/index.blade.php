@@ -14,17 +14,15 @@
                             <x-create-button href="{{ route('todo.create') }}"></x-create-button>
                         </div>
                         <div>
-                            @if(session('success'))
-                                <p x-data="{ show: true }" x-show="show" x-transition
-                                   x-init="setTimeout(() => show = false, 5000)"
-                                   class="text-sm text-green-700 dark:text-green-500">
+                            @if (session('success'))
+                                <p x-data="{ show: true }" x-show="show" x-transition x-init="setTimeout(() => show = false, 5000)"
+                                    class="text-sm text-green-700 dark:text-green-500">
                                     {{ session('success') }}
                                 </p>
                             @endif
-                            @if(session('danger'))
-                                <p x-data="{ show: true }" x-show="show" x-transition
-                                   x-init="setTimeout(() => show = false, 5000)"
-                                   class="text-sm text-red-700 dark:text-red-500">
+                            @if (session('danger'))
+                                <p x-data="{ show: true }" x-show="show" x-transition x-init="setTimeout(() => show = false, 5000)"
+                                    class="text-sm text-red-700 dark:text-red-500">
                                     {{ session('danger') }}
                                 </p>
                             @endif
@@ -69,6 +67,30 @@
                                     <td class="px-6 py-4">
                                         <div class="flex space-x-3">
                                             {{-- Action Here --}}
+                                            @if ($todo->is_complete == false)
+                                                <form action="{{ route('todo.complete', $todo) }}" method="POST">
+                                                    @csrf
+                                                    @method('PATCH')
+                                                    <button type="submit" class="text-green-600 dark:text-green-400">
+                                                        Complete
+                                                    </button>
+                                                </form>
+                                            @else
+                                                <form action="{{ route('todo.uncomplete', $todo) }}" method="POST">
+                                                    @csrf
+                                                    @method('PATCH')
+                                                    <button type="submit" class="text-blue-600 dark:text-blue-400">
+                                                        Uncomplete
+                                                    </button>
+                                                </form>
+                                            @endif
+                                            <form action="{{ route('todo.destroy', $todo) }}" method="POST">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="text-red-600 dark:text-red-400">
+                                                    Delete
+                                                </button>
+                                            </form>
                                         </div>
                                     </td>
                                 </tr>
@@ -83,6 +105,18 @@
                         </tbody>
                     </table>
                 </div>
+                @if ($todosCompleted > 1)
+                    <div class="p-6 text-xl text-gray-900 dark:text-gray-100">
+                        <form action="{{ route('todo.deleteallcompleted') }}" method="POST">
+                            @csrf
+                            @method('delete')
+                            <x-primary-button>
+                                Delete All Completed Task
+                            </x-primary-button>
+                        </form>
+
+                    </div>
+                @endif
             </div>
         </div>
     </div>
